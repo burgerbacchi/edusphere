@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Classroom Dashboard - EduSphere</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add Chart.js Library -->
 </head>
 <body>
   <header class="navbar">
@@ -28,7 +29,8 @@
       </div>
       <div class="graph">
         <h3>Data Visualization</h3>
-        <p>[Graph will be displayed here]</p>
+        <!-- Canvas for Graph -->
+        <canvas id="environmentGraph" width="400" height="200"></canvas>
       </div>
     </div>
     <button id="download-btn">Download Data</button>
@@ -54,6 +56,62 @@
   <footer>
     <p>&copy; 2025 EduSphere. All rights reserved.</p>
   </footer>
-  <script src="dashboard.js"></script>
+  <script>
+    // Chart.js Configuration
+    const ctx = document.getElementById('environmentGraph').getContext('2d');
+    const environmentGraph = new Chart(ctx, {
+      type: 'line', // Choose 'line', 'bar', 'pie', etc.
+      data: {
+        labels: ['Temperature', 'Humidity', 'Students', 'Noise'], // X-axis labels
+        datasets: [{
+          label: 'Environment Data',
+          data: [22, 50, 25, 35], // Corresponding Y-axis values
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+    // Update Environment Parameters and Graph
+    function updateEnvironmentAndGraph(temp, hum, students, noise) {
+      // Update environment parameters in the DOM
+      document.getElementById('temperature').textContent = temp;
+      document.getElementById('humidity').textContent = hum;
+      document.getElementById('students').textContent = students;
+      document.getElementById('noise').textContent = noise;
+
+      // Update the graph data
+      environmentGraph.data.datasets[0].data = [temp, hum, students, noise];
+      environmentGraph.update();
+    }
+
+    // Apply Customization
+    document.getElementById('apply-btn').addEventListener('click', () => {
+      const temp = parseInt(document.getElementById('custom-temperature').value, 10);
+      const hum = parseInt(document.getElementById('custom-humidity').value, 10);
+      const students = parseInt(document.getElementById('custom-students').value, 10);
+      const noise = parseInt(document.getElementById('custom-noise').value, 10);
+
+      updateEnvironmentAndGraph(temp, hum, students, noise);
+    });
+  </script>
 </body>
 </html>
